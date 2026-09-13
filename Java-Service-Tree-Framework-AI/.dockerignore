@@ -1,0 +1,8 @@
+build
+.gradle
+.idea
+.claude
+org
+docs
+scripts
+*.log

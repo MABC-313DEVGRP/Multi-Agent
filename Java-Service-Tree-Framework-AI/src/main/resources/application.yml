@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: javaServiceTreeFrameworkAI
+  config:
+    import: optional:file:.env[.properties]
+  ai:
+    openai:
+      api-key: ${UPSTAGE_API_KEY}
+      base-url: https://api.upstage.ai
+      chat:
+        options:
+          model: solar-pro4
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    use-root-path: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, env, health, beans, httptrace
