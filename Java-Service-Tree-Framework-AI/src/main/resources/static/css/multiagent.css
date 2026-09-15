@@ -266,6 +266,10 @@ body {
 .chat-send-btn.is-ready:active { background: rgba(164, 198, 255, 0.35); transform: scale(0.94); }
 .chat-stop-btn { background: rgba(255, 255, 255, 0.14); color: rgba(255, 255, 255, 0.85); cursor: pointer; }
 .chat-stop-btn:hover { background: rgba(255, 255, 255, 0.22); }
+/* 첨부 — 있는지 알아보도록 초록 강조, 마우스 올리면 더 밝게 */
+.chat-attach-btn { background: rgba(52, 211, 153, 0.14); border: 1px solid rgba(52, 211, 153, 0.6); color: #34d399; cursor: pointer; }
+.chat-attach-btn:hover { color: #fff; background: rgba(52, 211, 153, 0.3); border-color: rgba(52, 211, 153, 0.9); box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2); }
+.chat-attach-btn:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
 .chat-input-hint { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding: 0 4px; color: rgba(255, 255, 255, 0.3); font-size: 11px; }
 
 /* 대화가 시작되면 입력창을 채팅 위로 띄운다 */

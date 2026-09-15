@@ -38,6 +38,10 @@
   var HISTORY_TITLE_MAX = 40;
   var INPUT_MAX_HEIGHT = 160;
 
+  // 첨부: 파일을 읽어 붙여넣은 것처럼 이 질의와 함께 스트림으로 보낸다
+  var AS_FILE_AUTO_QUERY = '첨부한 요구사항정의서 파일을 작업 지시서로 바꿔 줘.';
+  var AS_STREAM_BODY_MAX = 200 * 1024;   // AI 모듈 JSON 본문 한도 아래로 유지
+
   var TERMS_HTML = [
     '<p class="as-terms-eyebrow">Terms of Service</p>',
     '<div class="as-terms-title">313DEVGRP 이용약관</div>',
@@ -128,6 +132,16 @@
 
     $('#as_new_chat_btn').addEventListener('click', startNewConversation);
 
+    // 엑셀·CSV 파일 첨부 — 고르면 바로 읽어 변환한다
+    $('#as_attach_btn').addEventListener('click', function () {
+      if (!asStreaming) $('#as_file_input').click();
+    });
+    $('#as_file_input').addEventListener('change', function () {
+      var file = this.files && this.files[0];
+      this.value = '';   // 같은 파일을 다시 고를 수 있게 비운다
+      if (file) uploadAttachment(file);
+    });
+
     // 이용약관 펼치기/접기
     $('#as_terms').addEventListener('click', function (e) {
       e.preventDefault();
@@ -182,6 +196,48 @@
     startChatIfNeeded();
     appendUserMessage(text);
     streamAnswer(appendAiMessage(), text);
+  }
+
+  // 첨부 — 파일을 브라우저에서 읽어(attach.js) 붙여넣은 것처럼 질의로 보낸다.
+  //   서버는 파일을 보관하지 않는다. 읽은 행 텍스트를 그대로 /multiagent/stream 으로 전달한다.
+  function uploadAttachment(file) {
+    if (asStreaming || !window.ASAttach) return;
+    var label = '📎 ' + String(file.name || '');
+    if (!asActiveConvId) createConversation(label);
+    startChatIfNeeded();
+    appendUserMessage(label);
+    var msg = appendAiMessage();
+
+    // 읽는 동안 다른 전송을 막는다(중지 버튼 노출)
+    asStreaming = true;
+    asFetchController = null;
+    toggleStopButton(true);
+    renderProgress(msg, '파일을 읽고 있어요');
+
+    window.ASAttach.readFile(file).then(function (parsed) {
+      if (!asStreaming) return;   // 읽는 중 중지됨
+      var note = parsed.truncated
+        ? '[안내: 파일 총 ' + parsed.totalRows + '행 중 앞 ' + parsed.rows + '행만 변환 대상으로 보냅니다]\n'
+        : '';
+      var query = AS_FILE_AUTO_QUERY + '\n\n' + note + '[파일: ' + parsed.name + ']\n' + parsed.text;
+      if (new TextEncoder().encode(query).length > AS_STREAM_BODY_MAX) {
+        errorStream(msg, '파일 내용이 많아 한 번에 보내기 어려워요. 변환할 행을 몇 건씩 나눠 붙여 넣어 주세요.', null);
+        return;
+      }
+      streamAnswer(msg, query);   // 진행 표시는 답변이 시작되면 지워진다
+    }).catch(function (e) {
+      errorStream(msg, parseFailMessage(e && e.reason), null);
+    });
+  }
+
+  // 읽지 못한 사유별 안내. 추측해서 읽지 않고 붙여넣기로 돌린다.
+  function parseFailMessage(reason) {
+    switch (reason) {
+      case 'UNSUPPORTED': return '엑셀(.xlsx)이나 CSV 파일만 읽을 수 있어요. .xls 는 .xlsx 로 다시 저장하거나, 변환할 행을 복사해 붙여 넣어 주세요.';
+      case 'TOO_LARGE': return '파일이 너무 커요(최대 5MB). 변환할 행을 복사해 붙여 넣어 주세요.';
+      case 'NO_DATA': return '파일에서 데이터 행을 찾지 못했어요. 요구사항을 채운 파일을 올리거나 행을 붙여 넣어 주세요.';
+      default: return '파일을 읽지 못했어요. 변환할 행을 복사해 붙여 넣어 주세요.';
+    }
   }
 
   function fitInputHeight(el) {
@@ -454,6 +510,7 @@
     $('#as_stop_btn').style.display = streaming ? 'flex' : 'none';
     $('#as_history_pane').classList.toggle('is-locked', !!streaming);
     $('#as_new_chat_btn').disabled = !!streaming;
+    $('#as_attach_btn').disabled = !!streaming;
   }
 
   ////////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,7 @@
     <symbol id="ic-thumbs-down" viewBox="0 0 24 24"><path d="M17 13V4h3a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1zM17 13l-4 7a2 2 0 0 1-2-2v-3H6a2 2 0 0 1-2-2.3l1.2-6A2 2 0 0 1 7.2 4H17"/></symbol>
     <symbol id="ic-spinner" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></symbol>
     <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12l4 4L19 7"/></symbol>
+    <symbol id="ic-paperclip" viewBox="0 0 24 24"><path d="M20 11.5l-8 8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.2 3.2 0 0 1 4.6 4.6l-8.5 8.5a1.5 1.5 0 0 1-2.2-2.1l7.7-7.7"/></symbol>
   </svg>
 
   <div class="app">
@@ -117,6 +118,10 @@
                   <div class="chat-input-wrapper">
                     <textarea id="as_input" class="chat-input-field" rows="1"
                       placeholder="요구사항정의서에서 요구사항 행을 복사해 붙여 넣어 보세요"></textarea>
+                    <button type="button" class="chat-send-btn chat-attach-btn" id="as_attach_btn" title="엑셀·CSV 파일 올리기" aria-label="엑셀·CSV 파일 올리기">
+                      <svg class="ic"><use href="#ic-paperclip"/></svg>
+                    </button>
+                    <input type="file" id="as_file_input" accept=".xlsx,.csv" style="display:none;" />
                     <button type="button" class="chat-send-btn" id="as_send_btn" title="질문하기" aria-label="질문하기" disabled>
                       <svg class="ic"><use href="#ic-arrow-up"/></svg>
                     </button>
@@ -137,6 +142,7 @@
     </div>
   </div>
 
+  <script src="/js/attach.js"></script>
   <script src="/js/multiagent.js"></script>
 </body>
 </html>
