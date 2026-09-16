@@ -3,7 +3,7 @@
 
   var AS_GROUPS = [
     {
-      label: 'Requirement', ko: '착수 지시서 변환', icon: 'ic-exchange', cls: 'as-group-requirement',
+      label: 'Requirement', ko: '착수 지시서 변환', icon: 'fa-exchange', cls: 'as-group-requirement',
       items: [
         { title: '샘플로 보여줘', q: '샘플로 보여줘' },
         { title: '완료 조건이 없는 요구사항', q: '요구사항명: 사용자 목록 엑셀 다운로드 / 상세: 관리자는 사용자 목록을 엑셀로 내려받을 수 있어야 한다.' },
@@ -11,7 +11,7 @@
       ]
     },
     {
-      label: 'Acceptance', ko: '완료 조건 검토', icon: 'ic-check-square', cls: 'as-group-acceptance',
+      label: 'Acceptance', ko: '완료 조건 검토', icon: 'fa-check-square-o', cls: 'as-group-acceptance',
       items: [
         { title: '모호한 성능 조건', q: '요구사항명: 상품 검색 / 완료 조건: 검색 결과가 빠르게 표시될 것' },
         { title: '모호한 안정성 조건', q: '요구사항명: 주문 결제 처리 / 완료 조건: 시스템이 안정적으로 동작할 것' },
@@ -19,7 +19,7 @@
       ]
     },
     {
-      label: 'PMBOK', ko: '프로젝트 관리', icon: 'ic-book', cls: 'as-group-pmbok',
+      label: 'PMBOK', ko: '프로젝트 관리', icon: 'fa-book', cls: 'as-group-pmbok',
       items: [
         { title: '범위 기술서와 WBS', q: '범위 기술서와 WBS는 무엇이 달라?' },
         { title: '인수 조건 작성법', q: '인수 조건은 어떻게 써야 해?' },
@@ -42,25 +42,7 @@
   var AS_FILE_AUTO_QUERY = '첨부한 요구사항정의서 파일을 작업 지시서로 바꿔 줘.';
   var AS_STREAM_BODY_MAX = 200 * 1024;   // AI 모듈 JSON 본문 한도 아래로 유지
 
-  var TERMS_HTML = [
-    '<p class="as-terms-eyebrow">Terms of Service</p>',
-    '<div class="as-terms-title">313DEVGRP 이용약관</div>',
-    '<p class="as-terms-meta">MultiAgent 서비스 이용에 관한 회사와 사용자의 권리·의무 및 책임 사항을 규정합니다.</p>',
-    '<h5 class="as-terms-h">제1조 (목적)</h5>',
-    '<p>본 이용약관은 313DEVGRP가 제공하는 MultiAgent 서비스 이용과 관련하여 313DEVGRP와 사용자 간의 권리, 의무 및 책임에 관한 사항을 규정함을 목적으로 합니다.</p>',
-    '<h5 class="as-terms-h">제2조 (용어의 정의)</h5>',
-    '<p class="as-terms-sub">1. "서비스"란 313DEVGRP가 생성형 AI를 이용하여 제공하는 서비스를 말합니다.</p>',
-    '<p class="as-terms-sub">2. "입력값"이란 사용자가 서비스에 입력하는 글·정보 등의 데이터를, "생성물"이란 그 결과로 생성된 답변 등 산출물을 말합니다.</p>',
-    '<h5 class="as-terms-h">제3조 (서비스 사용 시 주의사항)</h5>',
-    '<p class="as-terms-sub">1. 서비스는 불완전·부정확하거나 신뢰할 수 없는 생성물을 제공할 수 있습니다. 사용자는 정확성·적절성을 최종적으로 스스로 검증하여 이용하여야 합니다.</p>',
-    '<p class="as-terms-sub">2. 입력값에 민감정보·타인의 개인정보, 영업비밀, 타인의 지식재산권을 침해하는 사항 등이 포함되지 않도록 하여야 합니다.</p>',
-    '<h5 class="as-terms-h">제4조 (데이터 수집 및 활용)</h5>',
-    '<p>313DEVGRP는 더 나은 서비스 제공을 위하여 서비스 데이터를 수집·저장하고 품질 향상 목적으로 활용할 수 있습니다.</p>',
-    '<h5 class="as-terms-h">제5조 (면책)</h5>',
-    '<p>서비스는 관련 법률이 허용하는 한도 내에서 어떠한 보증도 없이 \'있는 그대로\' 제공되며, 313DEVGRP의 고의·중대한 과실이 아닌 손해에 대해 책임지지 않습니다.</p>',
-    '<h5 class="as-terms-h">제6조 (준거법)</h5>',
-    '<p>본 약관은 대한민국의 법률이 적용되며, 분쟁에 대한 소송은 관할 법원에서 결정합니다.</p>'
-  ].join('');
+  // 이용약관 전문은 index.html 에 인라인으로 두었다. JS 로 주입하지 않는다.
 
   var asStreaming = false;
   var asChatStarted = false;
@@ -74,7 +56,7 @@
   var asConvSeq = 0;
 
   function $(sel) { return document.querySelector(sel); }
-  function icon(name, cls) { return '<svg class="ic' + (cls ? ' ' + cls : '') + '"><use href="#' + name + '"></use></svg>'; }
+  function icon(name, cls) { return '<i class="fa ' + name + (cls ? ' ' + cls : '') + '"></i>'; }
   function escapeHtml(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -83,7 +65,6 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     renderSuggest();
-    $('#as_terms_box').innerHTML = TERMS_HTML;
     renderHistoryList();
     bindEvents();
     startPlaceholderRotator();
@@ -161,7 +142,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ queryText: '상태 확인', sessionId: 'status-check' })
     }).then(function (res) {
-      setAiBadge(res.ok ? 'ok' : 'warn', res.ok ? 'Ready' : 'Warn');
+      setAiBadge(res.ok ? 'ok' : 'warn', res.ok ? 'All Good' : 'Ready');
     }).catch(function () {
       setAiBadge('err', 'Offline');
     });
@@ -362,7 +343,7 @@
       var ai = streaming.querySelector('.as-answer-ai');
       var note = document.createElement('div');
       note.className = 'as-stopped';
-      note.innerHTML = icon('ic-stop-circle') + ' 답변을 중단했어요';
+      note.innerHTML = icon('fa-stop-circle') + ' 답변을 중단했어요';
       ai.appendChild(note);
     }
   }
@@ -406,7 +387,7 @@
       ai.insertBefore(box, ai.firstChild);
       msg.classList.add('has-progress');
     }
-    box.querySelector('.as-progress-step').innerHTML = icon('ic-spinner') + '<span>' + escapeHtml(text) + '</span>';
+    box.querySelector('.as-progress-step').innerHTML = icon('fa-spinner') + '<span>' + escapeHtml(text) + '</span>';
     requestAnimationFrame(function () { box.classList.add('in'); });
     scrollChatToBottom();
   }
@@ -423,7 +404,7 @@
     if (ai.querySelector('.as-sec-h')) return;
     var h = document.createElement('div');
     h.className = 'as-sec-h';
-    h.innerHTML = icon('ic-comment') + ' MultiAgent 답변';
+    h.innerHTML = icon('fa-comment-o') + ' MultiAgent 답변';
     ai.insertBefore(h, ai.querySelector('.as-answer-body'));
   }
 
@@ -432,9 +413,9 @@
     var bar = document.createElement('div');
     bar.className = 'as-msg-actions';
     bar.innerHTML =
-      '<button type="button" class="as-msg-action" data-action="like" title="좋아요">' + icon('ic-thumbs-up') + '</button>' +
-      '<button type="button" class="as-msg-action" data-action="dislike" title="싫어요">' + icon('ic-thumbs-down') + '</button>' +
-      '<span class="as-msg-thanks" style="display:none;">' + icon('ic-check') + ' 감사합니다</span>';
+      '<button type="button" class="as-msg-action" data-action="like" title="좋아요">' + icon('fa-thumbs-o-up') + '</button>' +
+      '<button type="button" class="as-msg-action" data-action="dislike" title="싫어요">' + icon('fa-thumbs-o-down') + '</button>' +
+      '<span class="as-msg-thanks" style="display:none;">' + icon('fa-check') + ' 감사합니다</span>';
     msg.querySelector('.text').after(bar);
   }
 
@@ -471,7 +452,7 @@
     wrap.innerHTML =
       '<div class="user-chat-row">' +
         '<span class="text user-text">' + escapeHtml(text) + '</span>' +
-        '<div class="chat-user-avatar">' + icon('ic-user') + '</div>' +
+        '<div class="chat-user-avatar">' + icon('fa-user') + '</div>' +
       '</div>';
     $('#chat').appendChild(wrap);
     scrollChatToBottom(true);
@@ -483,7 +464,7 @@
     msg.innerHTML =
       '<div style="padding-left:1rem;">' +
         '<div class="chat-ai-header">' +
-          '<div class="chat-ai-avatar">' + icon('ic-logo') + '</div>' +
+          '<div class="chat-ai-avatar">' + icon('fa-life-ring') + '</div>' +
           '<span class="chat-ai-label">MultiAgent</span>' +
         '</div>' +
         '<div class="text">' +
@@ -576,7 +557,7 @@
       html +=
         '<button type="button" class="as-history-item' + (conv.id === asActiveConvId ? ' is-active' : '') + '"' +
           ' data-conv-id="' + escapeHtml(conv.id) + '" title="' + escapeHtml(conv.fullTitle) + '">' +
-          icon('ic-comment') + '<span class="as-history-title">' + escapeHtml(conv.title) + '</span>' +
+          icon('fa-comment-o') + '<span class="as-history-title">' + escapeHtml(conv.title) + '</span>' +
         '</button>';
     });
     list.innerHTML = html;
